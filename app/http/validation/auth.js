@@ -6,8 +6,8 @@ const { UserModel } = require('../../models/user');
 function registerValidator() {
     return [
         body("username").custom(async (value, ctx) => {
+            const usernameRegex = /^[a-z]+[a-z0-9\_\.]{2,}/gi
             if (value) {
-                const usernameRegex = /^[a-z]+[a-z0-9\_\.]{2,}/gi
                 if (usernameRegex.test(value)) {
                     const user = await UserModel.findOne({ username: value });
                     if (user) throw "نام کاربری خود را تغییر بدهید"
@@ -34,6 +34,25 @@ function registerValidator() {
         })
     ]
 }
+
+function loginValidation() {
+    return [
+        body("username").notEmpty().withMessage("نام کاربری خود را وارد کنید").custom(async (value, ctx) => {
+            const usernameRegex = /^[a-z]+[a-z0-9\_\.]{2,}/gi
+            if (value) {
+                if (usernameRegex.test(value)) {
+                    return true
+                }
+                throw "نام کاربری صحیح نمی باشد"
+            }
+        }),
+        body("password").isLength({min : 6 , max : 16}).withMessage("کلمه عبور حداقل 6 کاراکتر باشد")
+    ]
+}
+
+
+
 module.exports = {
-    registerValidator
+    registerValidator,
+    loginValidation
 }
