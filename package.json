@@ -18,7 +18,9 @@
   },
   "homepage": "https://github.com/khosrora/projectmanagment#readme",
   "dependencies": {
+    "bcrypt": "^5.0.1",
     "express": "^4.18.1",
+    "express-validator": "^6.14.0",
     "mongoose": "^6.3.2"
   }
 }

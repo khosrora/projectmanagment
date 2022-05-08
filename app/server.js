@@ -4,14 +4,14 @@ module.exports = class Application {
     constructor(PORT, DB_URL) {
         this.configDataBase(DB_URL);
         this.configApplication();
-        this.createServer(PORT);
         this.createRoutes();
+        this.createServer(PORT);
         this.errorHanler();
     }
     configApplication() {
         const path = require('path');
         this.#app.use(this.#express.json());
-        this.#app.use(this.#express.urlencoded({ extends: true }));
+        this.#app.use(this.#express.urlencoded({ extended: true }))
         this.#app.use(this.#express.static(path.join(__dirname, "..", "public")))
     }
     createServer(PORT) {
@@ -47,10 +47,12 @@ module.exports = class Application {
         })
     }
     createRoutes() {
+        const { AllRoutes } = require('./router/router');
         this.#app.get("/", (req, res) => {
             return res.json({
                 msg: "test"
             })
         })
+        this.#app.use(AllRoutes)
     }
 }
