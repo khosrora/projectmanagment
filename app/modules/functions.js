@@ -12,7 +12,14 @@ function tokenMaker(payload) {
     return token
 }
 
+function verifyJwtToken(token) {
+    const result = jwt.verify(token, process.env.SECRET_KEY);
+    if (!result?.username) throw { status: 401, success: false, message: "لطفا وارد شوید" }
+    return result
+}
+
 module.exports = {
     hashString,
-    tokenMaker
+    tokenMaker,
+    verifyJwtToken
 }
