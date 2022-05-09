@@ -1,8 +1,9 @@
 const { hashString, tokenMaker } = require("../../modules/functions");
 const { UserModel } = require('./../../models/user');
 const bcrypt = require('bcrypt');
+const { Controller } = require("./Controller");
 
-class AuthController {
+class AuthController extends Controller {
     async register(req, res, next) {
         try {
             const { username, password, email, mobile } = req.body;
@@ -15,12 +16,11 @@ class AuthController {
     }
     async login(req, res, next) {
         try {
-            console.log(req.headers);
             const { username, password } = req.body;
             const user = await UserModel.findOne({ username });
-            if (!user) throw { status: 401, success: false, message: "لطفا ابتدا ثبت نام کنید" };
+            if (!user) throw this.error401(req, res, "لطفا ابتدا ثبت نام کنید")
             const compareResult = bcrypt.compareSync(password, user.password);
-            if (!compareResult) throw { status: 401, success: false, message: "لطفا ابتدا ثبت نام کنید" };
+            if (!compareResult) throw this.error401(req, res, "لطفا ابتدا ثبت نام کنید")
             const token = tokenMaker({ username });
             user.token = token;
             await user.save()
