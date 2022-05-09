@@ -1,6 +1,16 @@
-class ProjectController {
-    createProject() {
+const { ProjectModel } = require("../../models/project");
+const { Controller } = require('./Controller');
 
+class ProjectController extends Controller {
+    async createProject(req, res, next) {
+        try {
+            const { title, text, image } = req.body;
+            const result = await ProjectModel.create({ title, text, owner: req.user._id, image });
+            if (!result) throw this.error400(req, res, "پروژه ساخته نشد");
+            return this.success200(req, res, "پروژه با موفقیت ساخته شد")
+        } catch (err) {
+            next(err)
+        }
     }
     getAllProjects() {
 
