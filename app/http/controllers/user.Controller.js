@@ -1,4 +1,5 @@
 const { UserModel } = require("../../models/user");
+const { createLinkFiles } = require("../../modules/functions");
 const { Controller } = require("./Controller");
 
 class UserController extends Controller {
@@ -6,7 +7,7 @@ class UserController extends Controller {
     getProfile(req, res, next) {
         try {
             const user = req.user;
-            user.profile_image = req.protocol + "://" + req.get("host") + "/" + (user.profile_image).replace(/[\\\\]/gm , "/")
+            user.profile_image = createLinkFiles(req , user.profile_image)
             return this.success200(req, res, user)
         } catch (err) {
             next(err)
