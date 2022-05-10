@@ -12,8 +12,14 @@ class ProjectController extends Controller {
             next(err)
         }
     }
-    getAllProjects() {
-
+    async getAllProjects(req, res, next) {
+        try {
+            const owner = req.user._id;
+            const projects = await ProjectModel.find({ owner });
+            return this.success200(req, res, projects);
+        } catch (err) {
+            next(err)
+        }
     }
     getProjectById() {
 
