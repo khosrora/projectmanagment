@@ -7,7 +7,7 @@ class UserController extends Controller {
     getProfile(req, res, next) {
         try {
             const user = req.user;
-            user.profile_image = createLinkFiles(req , user.profile_image)
+            user.profile_image = createLinkFiles(req, user.profile_image)
             return this.success200(req, res, user)
         } catch (err) {
             next(err)
@@ -24,9 +24,6 @@ class UserController extends Controller {
             next(err)
         }
     }
-    addSkills() {
-
-    }
     async uploadProfileImage(req, res) {
         try {
             const userID = req.user._id;
@@ -39,8 +36,47 @@ class UserController extends Controller {
             next(err)
         }
     }
-    editSkills() {
-
+    async getAllRequest(req, res, next) {
+        try {
+            const userID = req.user._id;
+            const requests = await UserModel.findById(userID, { inviteRequest: 1 });
+            return this.success200(req, res, requests)
+        } catch (err) {
+            next(err)
+        }
+    }
+    async requestByStatus(req, res, next) {
+        try {
+            const status = req.params;
+            const userID = req.user._id;
+            const requests = await UserModel.aggregate([
+                { $match: { _id: userID } },
+                {
+                    $project: {
+                        inviteRequest: 1,
+                        _id: 0,
+                    }
+                }
+            ]);
+            return this.success200(req, res, requests)
+        } catch (err) {
+            next(err)
+        }
+    }
+    async changeStatusRequest(req, res, next) {
+        try {
+            const { id, status } = req.params;
+            const request = await UserModel.findOne({ "inviteRequest._id": id });
+            if (!request) throw this.error404(req, res, "درخواستی با این مشخصات پیدا نشد");
+            const findRequest = request.inviteRequest.find(item => item.id === id);
+            if (findRequest.status !== "pending") throw this.error400(req, res, "وضعیت درخواست مشخص شده است");
+            if (!['accepted', 'rejected'].includes(status)) throw this.error400(req, res, "اطلاعات ارسال شده صحیح نمی باشد");
+            const updateResult = await UserModel.updateOne({ "inviteRequest._id": id }, { $set: { 'inviteRequest.$.status': status } });
+            if (updateResult.modifiedCount == 0) throw this.error500(req, res, "تغییر درخواست با مشکل مواجه شد");
+            return this.success200(req, res, "وضعیت درخواست تغییر کرد");
+        } catch (err) {
+            next(err)
+        }
     }
     acceptInviteTeam() {
 

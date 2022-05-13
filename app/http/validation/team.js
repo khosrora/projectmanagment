@@ -7,16 +7,17 @@ function teamCreateValidation() {
         body("description").notEmpty().isLength({ min: 10, max: 250 }).withMessage("توضیحات تیم بین 10 و 250 کاراکتر باشد"),
         body("username").custom(async (username) => {
             const usernameRegep = /^[a-z]+[a-z0-9\_\.]{3,}$/gim
-            if(usernameRegep.test(username)){
-                const team = await TeamModel.findOne({username});
-                if(team) throw "نام کاربری قبلا توسط تیم دیگری استفاده شده است";
-                return true 
+            if (usernameRegep.test(username)) {
+                const team = await TeamModel.findOne({ username });
+                if (team) throw "نام کاربری قبلا توسط تیم دیگری استفاده شده است";
+                return true
             }
             throw "نام کاربری را به طور صحیح وارد کنید"
         }),
 
     ]
 }
+
 module.exports = {
     teamCreateValidation
 }
