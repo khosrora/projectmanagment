@@ -1,9 +1,10 @@
 const mongoose = require('mongoose');
 const TeamSchema = new mongoose.Schema({
     name: { type: String, required: true },
-    desc: { type: String },
+    description: { type: String },
+    username: { type: String, required: true, unique: true },
     users: { type: [mongoose.Types.ObjectId], default: [] },
-    owner: { type: mongoose.Types.ObjectId, ref: "User", required: true },
+    owner: { type: mongoose.Types.ObjectId, required: true },
 }, { timestamps: true });
 const TeamModel = mongoose.model("Team", TeamSchema);
 module.exports = { TeamModel };

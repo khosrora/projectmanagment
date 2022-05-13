@@ -36,9 +36,9 @@ module.exports = class Application {
                 message: "صفحه مورد نظر یافت نشد"
             });
         });
-        this.#app.use((error, req, res, next) => {
-            const status = error?.status || 500;
-            const message = error?.message || "Internal server error";
+        this.#app.use((err, req, res, next) => {
+            const status = err?.status || 500;
+            const message = err?.message || "Internal server error";
             return res.status(status).json({
                 status,
                 success: false,

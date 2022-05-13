@@ -30,6 +30,13 @@ class Controller {
             payload: payload
         })
     }
+    error500(req, res, payload) {
+        return res.status(500).json({
+            status: 500,
+            success: false,
+            payload: payload
+        })
+    }
     success200(req, res, payload) {
         return res.status(200).json({
             status: 200,
